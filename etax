@@ -1,0 +1,836 @@
+  document.querySelector("#data_form > div:nth-child(1) > div > div.panel-body").appendChild(cloneNode)
+                    }
+                    document.querySelector("#packageType2").disabled = false
+                    document.querySelector("#packageType2-2").disabled = false
+                    document.querySelector("#year").value = new Date().getFullYear()
+                    document.querySelector("#year-2").value = new Date().getFullYear()
+                    for (let id of ['packageType2','packageType2-2']){
+                        const options = document.querySelector(`#${id}`).options;
+                        [...options].forEach(x=>x.parentElement.removeChild(x))
+                        document.querySelector("[id='packageType2-2']").disabled = false
+                        options[0] = new Option('Yanvar','01')
+                        options[1] = new Option('Fevral','02')
+                        options[2] = new Option('Mart','03')
+                        options[3] = new Option('Aprel','04')
+                        options[4] = new Option('May','05')
+                        options[5] = new Option('İyun','06')
+                        options[6] = new Option('İyul','07')
+                        options[7] = new Option('Avqust','08')
+                        options[8] = new Option('Sentyabr','09')
+                        options[9] = new Option('Oktyabr','10')
+                        options[10] = new Option('Noyabr','11')
+                        options[11] = new Option('Dekabr','12')}
+                    document.querySelector("#packageType").value = '01'
+                    document.querySelector("#packageType-2").value = '01'
+                    document.querySelector("[id='packageType2']").value = '01'
+                    document.querySelector("[id='packageType2-2']").value = '12'
+                    document.querySelector("[id='packageType-2']").addEventListener('change',(e)=>{
+                        const options = document.querySelector("[id='packageType2-2']").options
+                        if (e.target.value==='0'){
+                            [...options].forEach(x=>x.parentElement.removeChild(x))
+                            options[0] = new Option('Seçin','0')
+                            document.querySelector("[id='packageType2-2']").disabled = true
+                            document.querySelector("[id='packageType2-2']").value = '0'
+                        }
+                        else if (e.target.value==='01'){
+                            [...options].forEach(x=>x.parentElement.removeChild(x))
+                            document.querySelector("[id='packageType2-2']").disabled = false
+                            options[0] = new Option('Yanvar','01')
+                            options[1] = new Option('Fevral','02')
+                            options[2] = new Option('Mart','03')
+                            options[3] = new Option('Aprel','04')
+                            options[4] = new Option('May','05')
+                            options[5] = new Option('İyun','06')
+                            options[6] = new Option('İyul','07')
+                            options[7] = new Option('Avqust','08')
+                            options[8] = new Option('Sentyabr','09')
+                            options[9] = new Option('Oktyabr','10')
+                            options[10] = new Option('Noyabr','11')
+                            options[11] = new Option('Dekabr','12')
+                            document.querySelector("[id='packageType2-2']").value = '12'
+
+                        }
+                        else if (e.target.value==='02'){
+                            [...options].forEach(x=>x.parentElement.removeChild(x))
+                            document.querySelector("[id='packageType2-2']").disabled = false
+                            for (let i = 0;i<=3;i++){
+                                options[i] = new Option(i+1,('0'+(i*3+1)).substr(('0'+(i*3+1)).length-2,2))}
+                            document.querySelector("[id='packageType2-2']").value = '10'
+                        }
+                    })
+                    document.querySelector("[id='filterButton-2']").textContent = 'Çap et'
+                    document.querySelector("[id='filterButton-2']").addEventListener('click',refundList)
+
+
+                } catch(error) {
+                    //console.log(error);
+                    if (count>0){
+                        await new Promise((res,rej)=>{setTimeout(()=>{res()},100)})
+                        append(count-1)
+                    }
+                }}
+            append()
+
+
+        } else if (window.location.href.includes('https://www.e-taxes.gov.az/vedop2/ebyn/dispatch')){
+            function stringToDate(title,toString=false) {
+                const [_, day, month, year, hour, minute, second] = title.match(
+                    /(\d{2})\.(\d{2})\.(\d{4})[\s-]*(\d{2}):(\d{2}):(\d{2})/
+                );
+                if (!toString){
+                    return new Date(year, month - 1, day, hour, minute, second).getTime();
+                } else {
+                    return new Date(year, month - 1, day, hour, minute, second).toLocaleDateString();
+                }
+            }
+            if (document.querySelector('#edhOperationAmount')){
+                async function append(count=9999){
+                    try{
+                        const textArea = document.createElement('textArea')
+                        const div = document.createElement('div')
+                        div.style.display = 'flex';
+                        document.querySelector("body").appendChild(div);
+                        div.style.alignItems = 'center';
+                        div.appendChild(textArea);
+                        div.style.flexDirection = 'column';
+                        textArea.style.width = '955px';
+                        textArea.id = 'textArea'
+                        textArea.style.height = '250px';
+                        textArea.style.marginBottom = '10px'
+                        const button = document.createElement('button')
+                        button.textContent = 'İmzalanacaq sənədlər qovluğuna göndər'
+                        div.appendChild(button);
+                        button.addEventListener('click',handler)
+                    } catch {
+                        if (count>0){
+                            await new Promise((res,rej)=>{setTimeout(()=>{res()},100)})
+                            append(count-1)
+                        }
+                    }}
+                append();
+
+                async function handler (){
+                    const textArea = document.querySelector('#textArea')
+                    const lines = textArea.value.split('\n');
+
+                    const payments = []
+                    for(let line of lines){
+                        const parts = line.split('\t')
+
+                        payments.push({taxId:parts[0], amount: parts[1], description: parts[2]})
+                    }
+
+                    const token = document.querySelector("#MTOKEN").value
+
+                    const doc = new DOMParser().parseFromString(await fetch("https://www.e-taxes.gov.az/vedop2/ebyn/dispatch", {
+                        "headers": {
+                            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,/;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                            "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+                            "cache-control": "max-age=0",
+                            "content-type": "application/x-www-form-urlencoded",
+                            "sec-ch-ua": "\"Chromium\";v=\"92\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"92\"",
+                            "sec-ch-ua-mobile": "?0",
+                            "sec-fetch-dest": "document",
+                            "sec-fetch-mode": "navigate",
+                            "sec-fetch-site": "same-origin",
+                            "sec-fetch-user": "?1",
+                            "upgrade-insecure-requests": "1"
+                        },
+                        "body": `cmd=EDVINSERTJSPSRV&TOKEN=${token}`,
+                        'method':'POST',
+                    }).then(response=>response.text()),'text/html')
+
+
+                    const taxId = doc.querySelector("#edv > table > tbody > tr:nth-child(1) > td > table:nth-child(3) > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(4) > td:nth-child(1)").innerText
+                    const taxName = doc.querySelector("#edv > table > tbody > tr:nth-child(1) > td > table:nth-child(3) > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(4) > td:nth-child(2)").innerText
+                    const totalAmount = doc.querySelector("#edv > table > tbody > tr:nth-child(1) > td > table:nth-child(3) > tbody > tr:nth-child(1) > td > table > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(4) > td:nth-child(3)").innerText
+
+                    payments.forEach(payment=>{
+                        if (Number(payment.amount)>Number(totalAmount)){
+                            alert('Ödənilən məbləğ, sub uçot hesabının qalığından çox ola bilməz !!!')
+                            return
+                        }
+
+                        fetch("https://www.e-taxes.gov.az/vedop2/ebyn/dispatch", {
+                            "headers": {
+                                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,/;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                                "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+                                "cache-control": "max-age=0",
+                                "content-type": "application/x-www-form-urlencoded",
+                                "sec-ch-ua": "\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"",
+                                "sec-ch-ua-mobile": "?0",
+                                "sec-fetch-dest": "document",
+                                "sec-fetch-mode": "navigate",
+                                "sec-fetch-site": "same-origin",
+                                "sec-fetch-user": "?1",
+                                "upgrade-insecure-requests": "1"
+                            },
+                            "method":"POST",
+                            "referrer": "https://www.e-taxes.gov.az/vedop2/ebyn/dispatch",
+                            "referrerPolicy": "strict-origin-when-cross-origin",
+                            "body": `TOKEN=${token}&cmd=EDV_SAVE_AS_WAITING_OPERATION_SRV&grupSayi=0&signedFilePath=&ok=0&edhOperationDebVoenOid=${taxId}&bildirishNo=&edhOperationDebVoenName=${taxName}&waitingOperationOid=null&waitingOperationOidS=&totalAmount=${totalAmount}&specialAccount=0&specialAccount=0&specialAmount=0&waitingOperationOid_1=&operationType=1&edhOperationCrdVoenOid=${payment.taxId}&edhOperationAmount=${payment.amount}&hdnInvCount=0&OperationTeyinat=${encodeURI(payment.description)}&daxilol=1&yxoCode=&treasureCode=0900111111`,
+                        }
+                             );
+                        console.log('Yazıldı.')
+                    })
+
+                }}
+
+            if (document.querySelector('[name="beyannameList"]')) {
+
+                let children = document.querySelector(
+                    '#type-b > table:nth-child(3) > tbody > tr:nth-child(4) > td > form > center > table > tbody'
+                ).children;
+                if (children.length > 0) {
+                    function sorting(i = 0) {
+                        let nodes = [...children].slice(3, children.length);
+                        if (stringToDate(nodes[i].title) < stringToDate(nodes[i + 1].title)) {
+                            nodes[i + 1].after(nodes[i]);
+                            sorting(i > 0 ? i - 1 : i);
+                        } else if (i < nodes.length - 2) {
+                            sorting(i + 1);
+                        }
+                    }
+                    sorting();
+                }
+            }
+
+
+            if (document.querySelector("[name='packageSearch']")) {
+                async function append(count=9999){
+                    try{
+                        const script = document.createElement('script')
+                        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.js'
+                        script.defer = true
+                        document.head.appendChild(script);
+                        const btn = document.createElement('input');
+                        btn.type = 'button';
+                        btn.value = 'Download All';
+                        btn.style.fontSize = '16px';
+                        document.querySelector('#bodyDiv').appendChild(btn);
+                        btn.addEventListener('click',downloadAll);
+                        document.querySelector("[name='donemBasYil']").value = document.querySelector("[name='donemBasYil']").options[document.querySelector("[name='donemBasYil']").options.length-1].value
+                        document.querySelector("[name='donemBitAy']").value = new Date().getMonth()+1
+                        document.querySelector("[name='donemBitYil']").value = document.querySelector("[name='donemBitYil']").options[document.querySelector("[name='donemBitYil']").options.length-1].value
+                        const label = document.createElement('label')
+                        label.id = 'Checker'
+                        label.style.fontSize = '14px'
+                        const labelText = document.createTextNode('text')
+                        labelText.textContent = 'Bir paketdə yüklə.'
+                        const checkbox = document.createElement('input')
+                        checkbox.type = 'checkbox';
+                        checkbox.id = 'onePaket'
+                        checkbox.checked = true
+                        label.appendChild(checkbox)
+                        label.appendChild(labelText)
+                        document.querySelector("#bodyDiv").appendChild(label)
+                    } catch(error) {
+                        if (count>0){
+                            await new Promise((res,rej)=>{setTimeout(()=>{res()},100)})
+                            append(count-1)
+                        }
+                    }};
+                append();
+                async function downloadAll() {
+                    const token = document.querySelector('#MTOKEN').value;
+                    const yearFrom = Number(
+                        document.querySelector("[name='donemBasYil']").value
+                    );
+                    const monthFrom = Number(
+                        document.querySelector("[name='donemBasAy']").value
+                    );
+                    const yearTo = Number(
+                        document.querySelector("[name='donemBitYil']").value
+                    );
+                    const monthTo = Number(
+                        document.querySelector("[name='donemBitAy']").value
+                    );
+
+                    const doc = new DOMParser().parseFromString(
+                        await fetch('https://www.e-taxes.gov.az/vedop2/ebyn/dispatch', {
+                            headers: {
+                                accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,/;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                                'accept-language': 'en-US,en;q=0.9',
+                                'cache-control': 'max-age=0',
+                                'content-type': 'application/x-www-form-urlencoded',
+                                'sec-ch-ua': '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
+                                'sec-ch-ua-mobile': '?0',
+                                'sec-fetch-dest': 'document',
+                                'sec-fetch-mode': 'navigate',
+                                'sec-fetch-site': 'same-origin',
+                                'sec-fetch-user': '?1',
+                                'upgrade-insecure-requests': '1',
+                            },
+                            referrer: 'https://www.e-taxes.gov.az/vedop2/ebyn/dispatch',
+                            referrerPolicy: 'strict-origin-when-cross-origin',
+                            body: `cmd=BEYANNAMESORGU&TOKEN=${token}`,
+                            method: 'POST',
+                            mode: 'cors',
+                            credentials: 'include',
+                        }).then((response) => response.text()),
+                        'text/html'
+                    );
+
+                    const vergiNo = doc.querySelector('[name="vergiNo"]').value;
+
+                    function download(filename, blob) {
+                        let element = document.createElement('a');
+                        element.href = URL.createObjectURL(blob);
+                        element.setAttribute('download', filename);
+                        element.click();
+                    }
+                    const onePaket = document.querySelector("#onePaket").checked;
+                    const Paket = new JSZip();
+                    for (let year = yearFrom; year <= yearTo; year++) {
+                        for (
+                            let month = year === yearTo ? 1 : monthFrom; month <= (year === yearTo ? monthTo : 12); month++) {
+                            try {
+                                const dec = new DOMParser().parseFromString(
+                                    await fetch('https://www.e-taxes.gov.az/vedop2/ebyn/dispatch', {
+                                        headers: {
+                                            accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,/;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                                            'accept-language': 'en-US,en;q=0.9',
+                                            'cache-control': 'max-age=0',
+                                            'content-type': 'application/x-www-form-urlencoded',
+                                            'sec-ch-ua': '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
+                                            'sec-ch-ua-mobile': '?0',
+                                            'sec-fetch-dest': 'document',
+                                            'sec-fetch-mode': 'navigate',
+                                            'sec-fetch-site': 'same-origin',
+                                            'sec-fetch-user': '?1',
+                                            'upgrade-insecure-requests': '1',
+                                        },
+                                        referrer: 'https://www.e-taxes.gov.az/vedop2/ebyn/dispatch',
+                                        referrerPolicy: 'strict-origin-when-cross-origin',
+                                        body: `TOKEN=${token}&cmd=BEYANNAMELISTESI&grupSayi=0&vergiNo=${vergiNo}&sorguTipiB=1&beyannameTanim=VAT&sorguTipiP=1&donemBasAy=${month}&donemBasYil=${year}&donemBitAy=${month}&donemBitYil=${year}&vdKodu=10&baslangicTarihi=20210802&bitisTarihi=20210802&sorguTipiD=1&durum=4&sentType=12`,
+                                        method: 'POST',
+                                        mode: 'cors',
+                                        credentials: 'include',
+                                    }).then((response) => response.text()),
+                                    'text/html'
+                                );
+
+                                const decsNodes = dec.querySelector(
+                                    '#type-b > table:nth-child(3) > tbody > tr:nth-child(4) > td > form > center > table > tbody'
+                                ).children;
+                                let lastDec = [...decsNodes]
+                                .splice(3, decsNodes.length - 1)
+                                .sort((a, b) => {
+                                    return stringToDate(b.title) - stringToDate(a.title);
+                                })[0];
+                                const [USERID, PACKAGE_OID, PACKAGE_NAME] = lastDec
+                                .querySelector('a')
+                                .href.replace('javascript:downloadFile(', '')
+                                .replace(');', '')
+                                .replace(/'/g, '')
+                                .split(',');
+
+                                const decBlob = await fetch(
+                                    `https://www.e-taxes.gov.az/vedop2/ebyn/dispatch?cmd=EDV_EBYN_DOWNLOAD_PACKAGE&USERID=${String(USERID)}&S_USERID=${String(USERID)}&PACKAGE_OID=${PACKAGE_OID}&PACKAGE_NAME=${PACKAGE_NAME}&TOKEN=${token}`, {
+                                        headers: {
+                                            accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,/;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                                            'accept-language': 'en-US,en;q=0.9',
+                                            'sec-ch-ua': '"Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"',
+                                            'sec-ch-ua-mobile': '?0',
+                                            'sec-fetch-dest': 'iframe',
+                                            'sec-fetch-mode': 'navigate',
+                                            'sec-fetch-site': 'same-origin',
+                                            'upgrade-insecure-requests': '1',
+                                        },
+                                        referrer: 'https://www.e-taxes.gov.az/vedop2/ebyn/dispatch',
+                                        referrerPolicy: 'strict-origin-when-cross-origin',
+                                        body: null,
+                                        method: 'GET',
+                                        mode: 'cors',
+                                        credentials: 'include',
+                                    }
+                                ).then((response) => response.blob());
+                                const zip = new JSZip()
+                                const decs = await zip.loadAsync(decBlob)
+                                const files = await decs.files
+                                for (let file of Object.values(files)){
+                                    const data = await file.async('text')
+                                    if (data.includes('Beyanname-Manifest-Version: 1.0')){
+                                        continue;
+                                    }
+                                    try {
+                                        const xml = new DOMParser().parseFromString(data,'text/xml')
+                                        if (xml.querySelector('beyanname').getAttribute('kodVer')!=='VAT_1'){
+                                            decs.remove(file.name)
+                                            continue
+                                        }
+                                        if (xml.querySelector('vergiNo').textContent!==String(vergiNo)){
+                                            decs.remove(file.name)
+                                            continue
+                                        }
+                                        const decYear = xml.querySelector('yil').textContent
+                                        if (decYear!==String(year)){
+                                            decs.remove(file.name)
+                                            continue
+                                        }
+                                        const decMonth = xml.querySelector('ay').textContent
+                                        if (decMonth!==String(month)){
+                                            decs.remove(file.name)
+                                            continue
+                                        }
+                                        if (onePaket){
+                                            Paket.file(decYear +'/' + decYear + '.' + decMonth + ' - ' + file.name, data)
+                                        }
+                                    } catch {
+                                        console.log('error')}
+                                }
+                                if (!onePaket){
+                                    const output = await zip.generateAsync({type:"blob"})
+                                    download(`${vergiNo} - ${year}.${String('0' + month).slice(-2)} - ${PACKAGE_NAME} - ${stringToDate(lastDec.title,true)}.zip`,output)
+                                    await new Promise(resolve => setTimeout(resolve, 1000))
+                                }
+                            } catch {
+                                continue;
+                            }
+                        }
+                    }
+                    if (onePaket){
+                        const doc = new DOMParser().parseFromString(
+                            await fetch("https://www.e-taxes.gov.az/vedop2/ebyn/dispatch", {
+                                "headers": {
+                                    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,/;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                                    "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+                                    "cache-control": "max-age=0",
+                                    "content-type": "application/x-www-form-urlencoded",
+                                    "sec-ch-ua": "\"Chromium\";v=\"92\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"92\"",
+                                    "sec-ch-ua-mobile": "?0",
+                                    "sec-fetch-dest": "document",
+                                    "sec-fetch-mode": "navigate",
+                                    "sec-fetch-site": "same-origin",
+                                    "sec-fetch-user": "?1",
+                                    "upgrade-insecure-requests": "1"
+                                },
+                                "referrer": "https://www.e-taxes.gov.az/vedop2/ebyn/dispatch",
+                                "referrerPolicy": "strict-origin-when-cross-origin",
+                                "body": `cmd=SICILVDGORUNTULE&TOKEN=${token}`,
+                                "method": "POST",
+                                "mode": "cors",
+                                "credentials": "include"
+                            }).then((response) => response.text()),
+                            'text/html'
+                        );
+                        const vergiAd = doc.querySelector("col.table_header").parentElement.parentElement.querySelector("tbody > tr:nth-child(3) > td:nth-child(2)").textContent;
+                        Paket.generateAsync({type:"blob"})
+                            .then(blob=>download(vergiNo + ' - ' + vergiAd + '.zip',blob))
+                    }
+                }
+
+            }
+
+
+        }
+    })
+
+    async function refundList(){
+
+        let fromYear = Number(document.querySelector("#year").value)
+        let toYear = Number(document.querySelector("#year-2").value)
+        let fromMonth = Number(document.querySelector("#packageType2").value)
+        let toMonth = Number(document.querySelector("#packageType2-2").value)
+        if (!fromYear){
+            alert('Başlanğıc ilini daxil edin!')
+            return;}
+        if (fromYear<1970){
+            fromYear = 1970
+        }
+        if (!toYear){
+            toYear = new Date().getFullYear()
+        }
+        if (!fromMonth){
+            fromMonth = 1}
+        if (!toMonth){
+            toMonth = 12}
+        let requests = []
+        for (let year = fromYear;year<=toYear;year++){
+            for (let month = (year===fromYear?fromMonth:1);month<=(year===toYear?toMonth:12);month++){
+                const monthStr = ('0'+month).substr(('0'+month).length-2,2)
+                requests.push(fetch("https://qaime.e-taxes.gov.az/service/eqaime.getDeclarationList", {
+                    "headers": {
+                        "accept": "text/plain, /; q=0.01",
+                        "accept-language": "en-US,en;q=0.9",
+                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                        "sec-ch-ua": "\"Chromium\";v=\"92\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"92\"",
+                        "sec-ch-ua-mobile": "?0",
+                        "sec-fetch-dest": "empty",
+                        "sec-fetch-mode": "cors",
+                        "sec-fetch-site": "same-origin",
+                        "x-requested-with": "XMLHttpRequest"
+                    },
+                    "referrer": "https://qaime.e-taxes.gov.az/PG_REFUND",
+                    "referrerPolicy": "strict-origin-when-cross-origin",
+                    "body": `year=${year}&type=01&month=${monthStr}`,
+                    "method": "POST",
+                    "mode": "cors",
+                    "credentials": "include"})
+                              .then(response=>response.json())
+                              .then(response=>response.declList)
+                              .then(response=>response.filter(x=>(x.declSumTotalEDV!=='')))
+                              .then(response=>response.sort((x,y)=>(stringToDate(y.declDate)-stringToDate(x.declDate)))[0])
+                              .then(response=>fetch("https://qaime.e-taxes.gov.az/service/eqaime.getRefundedList", {
+                    "headers": {
+                        "accept": "text/plain, /; q=0.01",
+                        "accept-language": "en-US,en;q=0.9",
+                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                        "sec-ch-ua": "\"Chromium\";v=\"92\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"92\"",
+                        "sec-ch-ua-mobile": "?0",
+                        "sec-fetch-dest": "empty",
+                        "sec-fetch-mode": "cors",
+                        "sec-fetch-site": "same-origin",
+                        "x-requested-with": "XMLHttpRequest"
+                    },
+                    "referrer": "https://qaime.e-taxes.gov.az/PG_REFUND",
+                    "referrerPolicy": "strict-origin-when-cross-origin",
+                    "body": `year=${year}&type=01&month=${monthStr}&declOid=${response.declOid}&state=all`,
+                    "method": "POST",
+                    "mode": "cors",
+                    "credentials": "include"
+                }).catch(()=>{}))
+                              .catch(()=>{}))}}
+        const refunds = await Promise.allSettled(requests)
+        .then(responses=>responses.filter(response=>response.value))
+        .then(responses=>Promise.allSettled(responses.map(response=>response.value.json())))
+        .then(responses=>responses.map(response=>response.value.refundListDTO))
+        const th = ['Dövr','№','Tarix','Seriya','Nömrə','Sətir kodu', 'VÖEN','Adı','Malın ümumi dəyəri','Malın ƏDV dəyəri','Ödənilmiş ümumi dəyər','Ödənilmiş ƏDV']
+        let newTab = window.open()
+        const table = newTab.document.createElement('table')
+        newTab.document.body.appendChild(table)
+        const thead = newTab.document.createElement('thead')
+        table.appendChild(thead)
+        let tr = thead.insertRow()
+        th.forEach(x=>{
+            let th = newTab.document.createElement('th')
+            th.innerHTML = x
+            tr.appendChild(th)
+        })
+        tr = thead.insertRow()
+        for (let x=1;x<=th.length;x++){
+            let th = newTab.document.createElement('th')
+            th.innerHTML = "'" + x
+            tr.appendChild(th)
+        }
+        const tbody = newTab.document.createElement('tbody')
+        table.appendChild(tbody)
+        for (let i = 0;i<=refunds.length-1;i++){
+            for (let j = 0;j<=refunds[i].length-1;j++){
+                try{
+                    const refund = refunds[i][j]
+                    let row = tbody.insertRow()
+                    if (refund.qaimeSeria==='Cəmi'){
+                        row.insertCell().innerHTML = '01.' + refunds[i][j-1].donem.substr(4,2) + '.' + refunds[i][j-1].donem.substr(0,4)
+                        row.insertCell().innerHTML = ''
+                        row.insertCell().innerHTML = ''
+                        row.insertCell().innerHTML = refund.qaimeSeria
+                        row.insertCell().innerHTML = refund.qaimeNum
+                        row.insertCell().innerHTML = refund.columnCode
+                        row.insertCell().innerHTML = refund.toVoen
+                        row.insertCell().innerHTML = refund.payerName
+                        row.insertCell().innerHTML = "'"+refund.umumiEdvsiz
+                        row.insertCell().innerHTML = "'"+refund.umumiEdv
+                        row.insertCell().innerHTML = "'"+refund.odenilmisEdvsiz
+                        row.insertCell().innerHTML = "'"+refund.odenilmisEdv
+                    } else {
+                        row.insertCell().innerHTML = '01.' + refunds[i][j].donem.substr(4,2) + '.' + refunds[i][j].donem.substr(0,4)
+                        row.insertCell().innerHTML = j+1
+                        row.insertCell().innerHTML = stringToDate(refund.qaimeDate + '000000').toLocaleDateString()
+                        row.insertCell().innerHTML = refund.qaimeSeria
+                        row.insertCell().innerHTML = refund.qaimeNum
+                        row.insertCell().innerHTML = refund.columnCode
+                        row.insertCell().innerHTML = refund.toVoen
+                        row.insertCell().innerHTML = refund.payerName
+                        row.insertCell().innerHTML = refund.umumiEdvsiz
+                        row.insertCell().innerHTML = refund.umumiEdv
+                        row.insertCell().innerHTML = refund.odenilmisEdvsiz
+                        row.insertCell().innerHTML = refund.odenilmisEdv}
+                } catch {
+                    continue}}
+        }
+        table.style.borderCollapse = 'collapse'
+        newTab.document.head.insertAdjacentHTML('beforeend','<style> table {borderCollapse:collapse} td,th {border: 1px solid black}; </style>')
+    }
+    async function printList(){
+        document.querySelector("#filterButton").click();
+        const pages = {'getDocList':['getInboxVHF','inboxList'],
+                       'getAllDocList':['getOutboxVHF','outboxList'],
+                       'getDrafts':['getDraftboxVHF','draftboxList'],}
+        const statuses = {"wf_flow_sign" :"Təsdiq gözləyən",
+                          "wf_approve_sign" :"Təsdiqlənmiş",
+                          "wf_send_back_for_correction" :"Düzəlişə göndərilmiş",
+                          "wf_cancel_app" :"Ləğv edilmiş",
+                          "wf_auto_cancel" :"Sistem tərəfindən ləğv edilib",
+                          "wf_auto_approve" :"Sistem tərəfindən təsdiqlənmiş",
+                          "wf_edit_after_sign" :"Düzəliş edilmiş",
+                          "wf_flow_sign_for_correction" :"Təsdiq gözləyən",
+                          "wf_cancel_request_sign" :"Ləğvə göndərildi",
+                          "wf_cancel_approve_sign" :"Ləğv təsdiqləndi",
+                          "wf_imtina_for_correction" :"Düzəlişdən imtina/Təsdiqlənmiş",
+                          "wf_imtina_for_cancel_request" :"Ləğvdən imtina/Təsdiqlənmiş"};
+        const erDocTypes = {"docType_3":"Malların, işlərin və xidmətlərin təqdim edilməsi qaiməsi",
+                            "docType_4":"Malların tam qaytarılması qaiməsi",
+                            "docType_13":"Malların qismən qaytarılması qaiməsi",
+                            "docType_5":"Qaytarma istisna olmaqla VM-in 163-cü maddəsinə əsasən dəqiqləşdirilmiş qaimə",
+                            "docType_11":"Malların agentə/komisyonçuya verilməsi qaiməsi",
+                            "docType_12":"Agent/Komisyonçu tərəfindən malların alıcıya təqdim edilməsi qaiməsi",
+                            "docType_8":"VM-in 177.5-ci maddəsinə əsasən təqdim edilən qaimə",
+                            "docType_9":"Malların emala göndərilməsi qaiməsi",
+                            "docType_10":"Malların emaldan qaytarılması qaiməsi",}
+        const docTypes = {'0':'Cari'}
+        const currentPage = Object.keys(pages).filter(page=>window.location.href.includes(page))[0]
+        const filterTaxId = document.querySelector("#voen").value;
+        const filterStatus = document.querySelector("#wfState").value;
+        const filterType = document.querySelector("#docType").value;
+        const filterFromDate = document.querySelector("#startDate").value;
+        const filterToDate = document.querySelector("#endDate").value;
+        const filterSer = document.querySelector("#vhfSeria").value;
+        const filterNumber = document.querySelector("#vhfNum").value;
+        if (!filterFromDate){
+            alert('Başlanğıc tarixi mütləq qeyd edilməlidir!!!')
+            return;
+        }
+        const lists = []
+
+        for (let page = 1;page<=500;page++){
+            const response = await fetch(`https://qaime.e-taxes.gov.az/service/eqaime.${pages[currentPage][0]}`, {
+                "headers": {
+                    "accept": "text/plain, /; q=0.01",
+                    "accept-language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "sec-ch-ua": "\"Chromium\";v=\"92\", \" Not A;Brand\";v=\"99\", \"Google Chrome\";v=\"92\"",
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-origin",
+                    "x-requested-with": "XMLHttpRequest"
+                },
+                "body": `voen=${filterTaxId}&wfState=${filterStatus}&docType=${filterType}&fromDate=${dateToString(filterFromDate)}&toDate=${dateToString(filterToDate)}&vhfSeria=${filterSer}&vhfNum=${filterNumber}&pagination%5Boffset%5D=${(page-1)*200}&pagination%5Blimit%5D=200`,
+                "method": "POST",
+                "mode": "cors",
+                "credentials": "include"
+            }).then(response=>response.json());
+            const eqfs = response[pages[currentPage][1]];
+            lists.push(...eqfs)
+            if (eqfs.length<200){
+                break}
+        }
+
+        lists.sort((a,b)=>(stringToDate(a.createdDate)-stringToDate(b.createdDate)) || (Number(a.vhfNum)-Number(b.vhfNum)));
+        if (!document.querySelector('#userscriptCheckbox').checked){
+            const th = ['№','Tipi','Növü','Vəziyyəti','VÖEN','Ödəyici adı','Tarix','Seriya','Nömrəsi','Qeyd','Əlavə qeyd','Əsas məbləğ','Ödənilməli ƏDV','Yol vergisi','Yekun məbləğ']
+            let newTab = window.open()
+            const table = newTab.document.createElement('table')
+            newTab.document.body.appendChild(table)
+            const thead = newTab.document.createElement('thead')
+            table.appendChild(thead)
+            let tr = thead.insertRow()
+            th.forEach(x=>{
+                let th = newTab.document.createElement('th')
+                th.innerHTML = x
+                tr.appendChild(th)
+            })
+            tr = thead.insertRow()
+            for (let x=1;x<=15;x++){
+                let th = newTab.document.createElement('th')
+                th.innerHTML = "'" + x
+                tr.appendChild(th)
+            }
+            const tbody = newTab.document.createElement('tbody')
+            table.appendChild(tbody)
+            for (let i = 0;i<lists.length;i++){
+                try{
+                    const list = lists[i]
+                    let row = tbody.insertRow()
+                    row.insertCell().innerHTML = i+1
+                    row.insertCell().innerHTML = docTypes[list.docType]
+                    row.insertCell().innerHTML = erDocTypes[list.erDocType]
+                    row.insertCell().innerHTML = statuses[Object.keys(statuses).filter(status=>list.status.includes(status))[0]]
+                    row.insertCell().innerHTML = list.voen
+                    row.insertCell().innerHTML = list.voenFullname
+                    row.insertCell().innerHTML = stringToDate(list.createdDate).toLocaleString().replace(',','')
+                    row.insertCell().innerHTML = list.vhfSeria
+                    row.insertCell().innerHTML = list.vhfNum
+                    row.insertCell().innerHTML = list.vhfMainSubject
+                    row.insertCell().innerHTML = list.vhfAddSubject
+                    row.insertCell().innerHTML = Round(Number(list.malinUmumiDeger)-Number(list.malinUmumiEdv)-Number(list.yolVergisi),2)
+                    row.insertCell().innerHTML = list.malinUmumiEdv
+                    row.insertCell().innerHTML = list.yolVergisi
+                    row.insertCell().innerHTML = list.malinUmumiDeger
+                } catch {
+                    continue}
+            }
+            let row = tbody.insertRow()
+            for (let i = 0;i<=14;i++){
+                if (i===0){
+                    const cell = row.insertCell()
+                    cell.textContent = ''
+                    cell.colSpan = 2;
+                }
+                if (i===2){
+                    const cell = row.insertCell()
+                    cell.textContent = 'Cəmi';
+                    cell.colSpan = 9;
+                    continue;
+                }
+                if ([11,12,13,14].includes(i)){
+                    let sum = 0;
+                    for (let j = 0;j<tbody.rows.length-1;j++){
+                        sum+=Number(tbody.rows[j].cells[i].textContent)
+                    }
+                    row.insertCell().innerHTML = "'" + Round(sum);
+                    continue;
+                }
+            }
+            table.style.borderCollapse = 'collapse'
+            newTab.document.head.insertAdjacentHTML('beforeend','<style> table {borderCollapse:collapse} td,th {border: 1px solid black}; </style>')
+        } else {
+            let responses = await Promise.allSettled([].map.call(lists,x=>{return fetch('https://qaime.e-taxes.gov.az/service/eqaime.printQaime', {
+                'headers': {
+                    'accept': 'text/plain, /; q=0.01',
+                    'accept-language': 'en-US,en;q=0.9',
+                    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    'sec-ch-ua': '\'Google Chrome\';v=\'87\', \' Not;A Brand\';v=\'99\', \'Chromium\';v=\'87\'',
+                    'sec-ch-ua-mobile': '?0',
+                    'sec-fetch-dest': 'empty',
+                    'sec-fetch-mode': 'cors',
+                    'sec-fetch-site': 'same-origin',
+                    'x-requested-with': 'XMLHttpRequest'
+                },
+                'body': `docOidList%5B%5D=${x.oid}`,
+                'method': 'POST',
+                'mode': 'cors',
+                'credentials': 'include'
+            })})).then(responses=>Promise.allSettled([].map.call(responses,response=>response.value.json())))
+            let htmls = responses.map(x=>{return new DOMParser().parseFromString(b64DecodeUnicode(x.value.htmlList[0]),'text/html')})
+            const th = ['№','Tipi','Növü','EQF Statusu','Təqdim edənin VÖEN-i','Təqdim edənin adı','Alcının VÖEN-i','Alcının adı','EQF Tarixi','EQF Seriyası','EQF Nömrəsi','Əsas Qeyd','Əlavə Qeyd','Əsas Məbləğ','ƏDV Məbləği','Yol vergisi','Ümumi Məbləğ','Sıra №-si','Mal kodu','Mal adı','Barkod','Ölçü vahidi','Malın miqdarı','Malın buraxılış qiyməti','Cəmi qiyməti','Aksiz dərəcəsi','Aksiz məbləği','Cəmi məbləğ','ƏDV-yə cəlb edilən məbləğ','ƏDV-yə cəlb edilməyən məbləğ','ƏDV-dən azad olunan','ƏDV-yə 0 dərəcə ilə cəlb edilən məbləğ','Ödənilməli ƏDV','Yol vergisi məbləği','Yekun məbləğ','Mal/Xidmət']
+            let newTab = window.open()
+            const table = newTab.document.createElement('table')
+            newTab.document.body.appendChild(table)
+            const thead = newTab.document.createElement('thead')
+            table.appendChild(thead)
+            let tr = thead.insertRow()
+            th.forEach(x=>{
+                let th = newTab.document.createElement('th')
+                th.innerHTML = x
+                tr.appendChild(th)
+            })
+            tr = thead.insertRow()
+            for (let x=1;x<=th.length;x++){
+                let th = newTab.document.createElement('th')
+                th.innerHTML = "'" + x
+                tr.appendChild(th)
+            }
+            const tbody = newTab.document.createElement('tbody')
+            table.appendChild(tbody)
+            for (let i=0; i<htmls.length;i++){
+                const html = htmls[i]
+                for (let j = 6; j <= html.querySelector('body > table > tbody').childNodes.length-2;j++){
+                    let product = html.querySelector('body > table > tbody').childNodes[j]
+                    let row = tbody.insertRow()
+                    row.insertCell().innerHTML = i+1
+                    row.insertCell().innerHTML = docTypes[lists[i].docType]
+                    row.insertCell().innerHTML = erDocTypes[lists[i].erDocType]
+                    row.insertCell().innerHTML = statuses[Object.keys(statuses).filter(status=>lists[i].status.includes(status))[0]]
+                    row.insertCell().innerHTML = html.querySelector('body > p:nth-child(4) > span:nth-child(2)').innerHTML.substring(0,10)
+                    row.insertCell().innerHTML = html.querySelector('body > p:nth-child(4) > span:nth-child(2)').innerHTML.substring(11,100)
+                    row.insertCell().innerHTML = html.querySelector('body > p:nth-child(4) > span:nth-child(5)').innerHTML.substring(0,10)
+                    row.insertCell().innerHTML = html.querySelector('body > p:nth-child(4) > span:nth-child(5)').innerHTML.substring(11,100)
+                    row.insertCell().innerHTML = html.querySelector('body > div:nth-child(2) > span:nth-child(8)').innerHTML
+                    row.insertCell().innerHTML = html.querySelector('body > div:nth-child(2) > span:nth-child(5)').innerHTML
+                    row.insertCell().innerHTML = html.querySelector('body > div:nth-child(2) > span:nth-child(7)').innerHTML
+                    row.insertCell().innerHTML = html.querySelector('body > p:nth-child(4) > span:nth-child(8)').innerHTML
+                    row.insertCell().innerHTML = html.querySelector('body > p:nth-child(4) > span:nth-child(11)').innerHTML
+                    row.insertCell().innerHTML = Number(html.querySelector('body > table:nth-child(6) > tbody > tr:last-child > td:nth-child(11) > span').innerHTML)
+                    row.insertCell().innerHTML = Number(html.querySelector('body > table:nth-child(6) > tbody > tr:last-child > td:nth-child(16) > span').innerHTML)
+                    row.insertCell().innerHTML = Number(html.querySelector('body > table:nth-child(6) > tbody > tr:last-child > td:nth-child(17) > span').innerHTML)
+                    row.insertCell().innerHTML = Number(html.querySelector('body > table:nth-child(6) > tbody > tr:last-child > td:nth-child(18) > span').innerHTML)
+                    row.insertCell().innerHTML = j-5
+                    row.insertCell().innerHTML = product.childNodes[1].textContent.substring(0,10);
+                    row.insertCell().innerHTML = product.childNodes[1].textContent.substring(11,100);
+                    row.insertCell().innerHTML = product.childNodes[2].textContent;
+                    row.insertCell().innerHTML = product.childNodes[3].textContent;
+                    row.insertCell().innerHTML = product.childNodes[4].textContent;
+                    row.insertCell().innerHTML = product.childNodes[5].textContent;
+                    row.insertCell().innerHTML = product.childNodes[6].textContent;
+                    row.insertCell().innerHTML = product.childNodes[7].textContent;
+                    row.insertCell().innerHTML = product.childNodes[8].textContent;
+                    row.insertCell().innerHTML = product.childNodes[10].textContent;
+                    row.insertCell().innerHTML = product.childNodes[11].textContent;
+                    row.insertCell().innerHTML = product.childNodes[12].textContent;
+                    row.insertCell().innerHTML = product.childNodes[13].textContent;
+                    row.insertCell().innerHTML = product.childNodes[14].textContent;
+                    row.insertCell().innerHTML = product.childNodes[15].textContent;
+                    row.insertCell().innerHTML = product.childNodes[16].textContent;
+                    row.insertCell().innerHTML = product.childNodes[17].textContent;
+                    row.insertCell().innerHTML = product.childNodes[1].textContent.substring(0,2)=='99'?'Xidmət':'Mal';
+                }
+            }
+            let row = tbody.insertRow()
+            for (let c = 0;c<=36;c++){
+                if (c===0){
+                    const cell = row.insertCell()
+                    cell.textContent = ''
+                    cell.colSpan = 2;
+                }
+                if (c===2){
+                    const cell = row.insertCell()
+                    cell.textContent = 'Cəmi';
+                    cell.colSpan = 11;
+                    continue;
+                }
+                if (range(23,13).includes(c)){
+                    const cell = row.insertCell();
+                    if ([13,14,15,16].includes(c)){
+                        let sum = 0;
+                        for (let r = 2;r<table.rows.length-1;r++){
+                            if (table.rows[r].cells[9].textContent!==table.rows[r-1].cells[9].textContent || table.rows[r].cells[10].textContent!==table.rows[r-1].cells[10].textContent){
+                                sum+=Number(table.rows[r].cells[c].textContent)}
+                        }
+                        cell.textContent = "'" + Round(sum);
+                        continue;
+                    }
+                    if (range(13,22).includes(c)){
+                        let sum = 0;
+                        for (let r = 2;r<table.rows.length-1;r++){
+                            sum+=Number(table.rows[r].cells[c].textContent)
+                        }
+                        cell.textContent = "'" + Round(sum);
+                        continue;
+                    }
+                }
+            }
+            table.style.borderCollapse = 'collapse'
+            newTab.document.head.insertAdjacentHTML('beforeend','<style> table {borderCollapse:collapse} td,th {border: 1px solid black}; </style>')
+        }
+    }
+    function b64DecodeUnicode (str) {
+        /// Going backwards: from bytestream, to percent-encoding, to original string./
+        return decodeURIComponent(atob(str).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    };
+
+    function range(size, startAt = 0) {
+        return [...Array(size).keys()].map(i => i + startAt);
+    }
+
+    function Round(number,digits=2){
+        return Math.round(number*10*digits)/10*digits
+    }
+
+    function stringToDate(string){
+        const [_,year,month,day,hour,minute,second,ms] = string.match(/(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})(\d{0,3})/)
+        return new Date(year,month-1,day,hour,minute,second,ms)
+    }
+    function dateToString(datetime){
+        try {
+            const [date,time] = datetime.split(' ')
+            const [day,month,year] = date.split('.')
+            const [hour,minute,second] = time.split(':')
+            return year+month+day+hour+minute+(second||'00')
+        } catch {
+            return ''}
+    }
+})();
